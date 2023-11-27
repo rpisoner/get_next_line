@@ -6,7 +6,7 @@
 /*   By: rpisoner <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/25 17:41:03 by rpisoner          #+#    #+#             */
-/*   Updated: 2023/11/27 13:56:01 by rpisoner         ###   ########.fr       */
+/*   Updated: 2023/11/27 16:04:10 by rpisoner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 char	*get_next_line(int fd);
 char	*check_if_line(char *buffer, size_t i, int fd);
 char	*not_line(char *buffer, size_t i, int fd);
-char	*check_leftovers(char *buffer, size_t i, int fd);
+char	*leftovers(char *buffer, size_t i, int fd);
 //FUNCIONES EN GET_NEXT_LINE_UTILS
 void	*ft_calloc(size_t size);
 char	*ft_strjoin(char const *s1, char const *s2);
