@@ -6,7 +6,7 @@
 /*   By: rpisoner <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/25 17:41:03 by rpisoner          #+#    #+#             */
-/*   Updated: 2023/11/27 16:04:10 by rpisoner         ###   ########.fr       */
+/*   Updated: 2023/12/04 17:27:43 by rpisoner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,4 +30,5 @@ char	*leftovers(char *buffer, size_t i, int fd);
 void	*ft_calloc(size_t size);
 char	*ft_strjoin(char const *s1, char const *s2);
 size_t	ft_strlen(const char *s);
+void	*ft_memcpy(void *dst, const void *src, size_t n);
 #endif

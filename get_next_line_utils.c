@@ -6,28 +6,11 @@
 /*   By: rpisoner <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 10:44:22 by rpisoner          #+#    #+#             */
-/*   Updated: 2023/11/27 11:09:28 by rpisoner         ###   ########.fr       */
+/*   Updated: 2023/12/04 20:01:40 by rpisoner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-void	*ft_calloc(size_t size)
-{
-	char	*ptr;
-	size_t	i;
-
-	i = 0;
-	ptr = malloc(size);
-	if (ptr == 0)
-		return (ptr);
-	while (i < size)
-	{
-		ptr[i] = '\0';
-		i++;
-	}
-	return (ptr);
-}
 
 size_t	ft_strlen(const char *s)
 {
@@ -61,6 +44,25 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		i++;
 		j++;
 	}
-	new[i] = '\0';
 	return (new);
+}
+
+void	*ft_memcpy(void *dst, const void *src, size_t n)
+{
+	size_t		i;
+	char		*d;
+	const char	*s;
+
+	i = 0;
+	d = (char *)dst;
+	s = (const char *)src;
+	if (n == 0 || d == s)
+		return (dst);
+	while (n > 0)
+	{
+		d[i] = s[i];
+		i++;
+		n--;
+	}
+	return (dst);
 }
