@@ -5,68 +5,80 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: rpisoner <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/25 17:48:06 by rpisoner          #+#    #+#             */
-/*   Updated: 2023/12/04 20:52:16 by rpisoner         ###   ########.fr       */
+/*   Created: 2023/12/08 00:41:41 by rpisoner          #+#    #+#             */
+/*   Updated: 2023/12/08 16:24:21 by rpisoner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*remainings(char *leftovers, size_t i)
+char	*is_line(char *buffer, size_t *i)
 {
-	char	*remainings;
-	size_t	j;
-
-	j = 0;
-	i += 1;
-	remainings = (char *)malloc((BUFFER_SIZE - i + 1) * sizeof(char));
-	while (leftovers[i])
-	{
-		remainings[j] = leftovers[i];
-		j++;
-		i++;
-	}
-	return (remainings);
-}
-
-char	*is_line(char *buffer, size_t i)
-{
-	size_t		j;
 	char		*line;
 
-	j = 0;
-	line = malloc((i + 1) * sizeof(char));
-	if (!line)
-		return (NULL);
-	while (j < i && buffer[j])
+	while (buffer[*i] != '\n')
 	{
-		line[j] = buffer[j];
-		j++;
+		*i += 1;
+	}
+	line = ft_substr(buffer, 0, *i + 1);
+	if (!line)
+	{
+		free(line);
+		return (NULL);
 	}
 	return (line);
 }
 
-char	*ft_readfile(char *buffer, int fd)
+char	*remainings(char *leftovers, size_t *i)
 {
-	size_t		i;
-	size_t		o_read;
-	char		*line;
-	static char	*leftovers;
-	char		*tmp;
+	char	*remainings;
+	size_t	j;
+	size_t	aux;
 
-	o_read = read(fd, buffer, BUFFER_SIZE);
-	line = NULL;
+	*i += 1;
+	aux = *i;
+	j = 0;
+	while (leftovers[*i] != '\0')
+		*i += 1;
+	if (*i - aux <= 0)
+		return (NULL);
+	remainings = (char *)malloc((*i - aux) * sizeof(char));
+	if (!remainings)
+	{
+		free(remainings);
+		return (NULL);
+	}
+	while (aux <= *i)
+	{
+		remainings[j] = leftovers[aux];
+		j++;
+		aux++;
+	}
+	return (remainings);
+}
+
+char	*get_next_line(int fd)
+{
+	static char	*leftovers;
+	char		*buffer;
+	char		*tmp;
+	char		*line;
+	size_t		o_read;
+	size_t		i;
+
 	i = 0;
+	line = NULL;
+	buffer = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
+	buffer[BUFFER_SIZE] = '\0';
 	if (!leftovers)
 	{
-		leftovers = malloc((BUFFER_SIZE + 1) * sizeof(char));
-		leftovers[BUFFER_SIZE] = '\0';
-		leftovers = ft_memcpy(leftovers, buffer, BUFFER_SIZE);
+		leftovers = (char *)malloc(BUFFER_SIZE * sizeof(char));
+		o_read = read(fd, leftovers, BUFFER_SIZE);
 	}
-	while (o_read)
+	while (leftovers[i])
 	{
 		tmp = leftovers;
-		if (!leftovers[i])
+		if (!ft_strchr(leftovers, '\n'))
 		{
 			o_read = read(fd, buffer, BUFFER_SIZE);
 			if (o_read)
@@ -74,39 +86,30 @@ char	*ft_readfile(char *buffer, int fd)
 				while (o_read < BUFFER_SIZE)
 					buffer[o_read++] = '\0';
 				leftovers = ft_strjoin(tmp, buffer);
+				i += BUFFER_SIZE;
+				free (tmp);
 			}
 			else
-				return (leftovers);
-			free(tmp);
-		}
-		while (leftovers[i])
-		{
-			if (leftovers[i] == '\n')
 			{
-				line = is_line(leftovers, i);
-				tmp = leftovers;
-				leftovers = remainings(leftovers, i);
-				free (tmp);
-				return (line);
+				free (buffer);
+				return (leftovers);
 			}
-			i++;
+		}
+		else
+		{
+			line = is_line(leftovers, &i);
+			leftovers = remainings(leftovers, &i);
+			free (buffer);
+			free (tmp);
+			return (line);
 		}
 	}
-	return (leftovers);
+	return (NULL);
 }
 
-char	*get_next_line(int fd)
+void	leaks(void)
 {
-	char	*buffer;
-
-	buffer = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
-	buffer[BUFFER_SIZE] = '\0';
-	if (!buffer)
-	{
-		free (buffer);
-		return (NULL);
-	}
-	return (ft_readfile(buffer, fd));
+	system("leaks -q a.out");
 }
 
 int	main(void)
@@ -116,10 +119,14 @@ int	main(void)
 
 	file = open("pruebas.txt", O_RDWR);
 	next = get_next_line(file);
-	printf("%s", next);
+	while (next)
+	{
+		printf("%s", next);
+		if (next)
+			free(next);
+		next = get_next_line(file);
+	}
+	exit(0);
+	close(file);
 	return (0);
 }
-
-//TODOS
-// CUANDO LEE UN ARCHIVO QUE NO TIENE SALTO DE LÍNEA, DEVUELVE LA LÍNEA, REPETIDO EL FINAL BUFFERSIZE VECES
-// SEGMENTATION FAULT AL TRATAR DE LEER UN SALTO DE LÍNEA

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: rpisoner <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/27 10:44:22 by rpisoner          #+#    #+#             */
-/*   Updated: 2023/12/04 20:01:40 by rpisoner         ###   ########.fr       */
+/*   Created: 2023/12/08 00:44:21 by rpisoner          #+#    #+#             */
+/*   Updated: 2023/12/08 13:02:27 by rpisoner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,25 +44,45 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		i++;
 		j++;
 	}
+	new[i] = '\0';
 	return (new);
 }
 
-void	*ft_memcpy(void *dst, const void *src, size_t n)
+char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
-	size_t		i;
-	char		*d;
-	const char	*s;
+	char			*substr;
+	size_t			i;
 
 	i = 0;
-	d = (char *)dst;
-	s = (const char *)src;
-	if (n == 0 || d == s)
-		return (dst);
-	while (n > 0)
+	if (len > ((unsigned int)ft_strlen(s)) - start)
+		len = ((unsigned int)ft_strlen(s)) - start;
+	if (start > ft_strlen(s))
 	{
-		d[i] = s[i];
-		i++;
-		n--;
+		substr = "";
+		return (substr);
 	}
-	return (dst);
+	substr = (char *)malloc(len + 1);
+	if (!substr)
+		return (0);
+	while (i < len && *(s + i) != '\0')
+	{
+		*(substr + i) = *(s + start + i);
+		i++;
+	}
+	*(substr + i) = '\0';
+	return (substr);
+}
+
+char	*ft_strchr(const char *s, int c)
+{
+	size_t	i;
+
+	i = 0;
+	while (*(s + i) != (char)c)
+	{
+		if (*(s + i) == '\0')
+			return (0);
+		i++;
+	}
+	return ((char *)(s + i));
 }
