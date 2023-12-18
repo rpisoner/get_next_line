@@ -6,7 +6,7 @@
 /*   By: rpisoner <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/25 17:41:03 by rpisoner          #+#    #+#             */
-/*   Updated: 2023/12/08 15:52:32 by rpisoner         ###   ########.fr       */
+/*   Updated: 2023/12/18 18:33:28 by rpisoner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@
 # endif
 //FUNCIONES EN GET_NEXT_LINE
 char	*get_next_line(int fd);
-char	*is_line(char *buffer, size_t *i);
+char	*is_line(char *buffer);
+char	*read_file(int fd, char *buffer);
 char	*remainings(char *leftovers, size_t *i);
 //FUNCIONES EN GNL_UTILS
 char	*ft_substr(char const *s, unsigned int start, size_t len);

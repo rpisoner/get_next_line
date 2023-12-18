@@ -6,105 +6,101 @@
 /*   By: rpisoner <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 00:41:41 by rpisoner          #+#    #+#             */
-/*   Updated: 2023/12/08 16:24:21 by rpisoner         ###   ########.fr       */
+/*   Updated: 2023/12/18 20:44:52 by rpisoner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*is_line(char *buffer, size_t *i)
+char	*read_file(int fd, char *buffer)
 {
-	char		*line;
+	char	*stuff;
+	ssize_t	o_read;
 
-	while (buffer[*i] != '\n')
-	{
-		*i += 1;
-	}
-	line = ft_substr(buffer, 0, *i + 1);
-	if (!line)
-	{
-		free(line);
+	o_read = 1;
+	stuff = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (!stuff)
 		return (NULL);
+	stuff[BUFFER_SIZE] = '\0';
+	while (o_read > 0 && !ft_strchr(buffer, '\n'))
+	{
+		o_read = read(fd, stuff, BUFFER_SIZE);
+		if (o_read < 0)
+		{
+			break ;
+		}
+		stuff[o_read] = '\0';
+		buffer = ft_strjoin(buffer, stuff);
 	}
+	free(stuff);
+	return (buffer);
+}
+
+char	*is_line(char *buffer)
+{
+	char	*line;
+	size_t	i;
+
+	i = 0;
+	line = NULL;
+	while (buffer[i] != '\n' && buffer[i])
+		i++;
+	if (buffer[i] == '\n')
+	{
+		line = ft_substr(buffer, 0, i + 1);
+	}
+	else if (buffer[i] == '\0')
+	{
+		line = ft_substr(buffer, 0, ft_strlen(buffer));
+	}
+	if (!line || line[0] == '\0')
+		return (NULL);
 	return (line);
 }
 
-char	*remainings(char *leftovers, size_t *i)
+char	*leftovers(char *buffer)
 {
 	char	*remainings;
+	size_t	i;
 	size_t	j;
 	size_t	aux;
 
-	*i += 1;
-	aux = *i;
+	i = 0;
 	j = 0;
-	while (leftovers[*i] != '\0')
-		*i += 1;
-	if (*i - aux <= 0)
+	while (buffer[i] != '\n' && buffer[i])
+		i++;
+	aux = i;
+	while (buffer[i])
+		i++;
+	if (i - aux <= 0)
 		return (NULL);
-	remainings = (char *)malloc((*i - aux) * sizeof(char));
+	remainings = ft_substr(buffer, i + 1, i - aux);
+	free (buffer);
+	buffer = NULL;
 	if (!remainings)
-	{
-		free(remainings);
 		return (NULL);
-	}
-	while (aux <= *i)
-	{
-		remainings[j] = leftovers[aux];
-		j++;
-		aux++;
-	}
 	return (remainings);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*leftovers;
-	char		*buffer;
-	char		*tmp;
+	static char	*buffer;
 	char		*line;
-	size_t		o_read;
-	size_t		i;
 
-	i = 0;
-	line = NULL;
-	buffer = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
-	buffer[BUFFER_SIZE] = '\0';
-	if (!leftovers)
-	{
-		leftovers = (char *)malloc(BUFFER_SIZE * sizeof(char));
-		o_read = read(fd, leftovers, BUFFER_SIZE);
-	}
-	while (leftovers[i])
-	{
-		tmp = leftovers;
-		if (!ft_strchr(leftovers, '\n'))
-		{
-			o_read = read(fd, buffer, BUFFER_SIZE);
-			if (o_read)
-			{
-				while (o_read < BUFFER_SIZE)
-					buffer[o_read++] = '\0';
-				leftovers = ft_strjoin(tmp, buffer);
-				i += BUFFER_SIZE;
-				free (tmp);
-			}
-			else
-			{
-				free (buffer);
-				return (leftovers);
-			}
-		}
-		else
-		{
-			line = is_line(leftovers, &i);
-			leftovers = remainings(leftovers, &i);
-			free (buffer);
-			free (tmp);
-			return (line);
-		}
-	}
-	return (NULL);
+	if (!fd || !BUFFER_SIZE)
+		return (NULL);
+	if (!buffer || !ft_strchr(buffer, '\n'))
+	/*una funcion que lea y me devuelva toda la lectura*/
+		buffer = read_file(fd, buffer);
+	if (!buffer)
+		return (NULL);
+	//funcion para sacar la linea que voy a devolver
+	line = is_line(buffer);
+	if (!line)
+		return (NULL);
+	//gestionamos el buffer para que nos quede bien limpio
+	buffer = leftovers(buffer);
+	return (line);
 }
 
 void	leaks(void)
@@ -112,21 +108,19 @@ void	leaks(void)
 	system("leaks -q a.out");
 }
 
-int	main(void)
-{
-	int		file;
-	char	*next;
+// int	main(void)
+// {
+// 	int		file;
+// 	char	*next;
 
-	file = open("pruebas.txt", O_RDWR);
-	next = get_next_line(file);
-	while (next)
-	{
-		printf("%s", next);
-		if (next)
-			free(next);
-		next = get_next_line(file);
-	}
-	exit(0);
-	close(file);
-	return (0);
-}
+// 	file = open("pruebas.txt", O_RDWR);
+// 	while ((next = get_next_line(file)) != NULL)
+// 	{
+// 		printf("%s", next);
+// 		if (next)
+// 			free(next);
+// 	}
+// 	exit(0);
+// 	close(file);
+// 	return (0);
+// }

@@ -6,7 +6,7 @@
 /*   By: rpisoner <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 00:44:21 by rpisoner          #+#    #+#             */
-/*   Updated: 2023/12/08 13:02:27 by rpisoner         ###   ########.fr       */
+/*   Updated: 2023/12/18 19:33:10 by rpisoner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ size_t	ft_strlen(const char *s)
 	size_t	i;
 
 	i = 0;
+	if (!s)
+		return (0);
 	while (s[i] != '\0')
 		i++;
 	return (i);
@@ -33,10 +35,13 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	new = (char *)malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
 	if (!new)
 		return (0);
-	while ((char)s1[i] != '\0')
+	if (s1)
 	{
-		new[i] = (char)s1[i];
-		i++;
+		while ((char)s1[i] != '\0')
+		{
+			new[i] = (char)s1[i];
+			i++;
+		}
 	}
 	while ((char)s2[j] != '\0')
 	{
@@ -54,6 +59,8 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	size_t			i;
 
 	i = 0;
+	if (!s)
+		return (NULL);
 	if (len > ((unsigned int)ft_strlen(s)) - start)
 		len = ((unsigned int)ft_strlen(s)) - start;
 	if (start > ft_strlen(s))
@@ -78,6 +85,8 @@ char	*ft_strchr(const char *s, int c)
 	size_t	i;
 
 	i = 0;
+	if (!s)
+		return (NULL);
 	while (*(s + i) != (char)c)
 	{
 		if (*(s + i) == '\0')
