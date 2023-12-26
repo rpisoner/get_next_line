@@ -25,7 +25,7 @@
 char	*get_next_line(int fd);
 char	*is_line(char *buffer);
 char	*read_file(int fd, char *buffer);
-char	*remainings(char *leftovers, size_t *i);
+char	*leftovers(char *buffer);
 //FUNCIONES EN GNL_UTILS
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strjoin(char const *s1, char const *s2);
