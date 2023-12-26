@@ -32,7 +32,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 
 	i = 0;
 	j = 0;
-	new = (char *)malloc(ft_strlen(s1) + ft_strlen(s2) + 1); //LEAK
+	new = (char *)malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
 	if (!new)
 		return (NULL);
 	if (s1)
@@ -68,7 +68,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 		substr = "";
 		return (substr);
 	}
-	substr = (char *)malloc(len + 1); //LEAK
+	substr = (char *)malloc(len + 1);
 	if (!substr)
 		return (0);
 	while (i < len && *(s + i) != '\0')
