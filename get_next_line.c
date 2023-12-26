@@ -6,7 +6,7 @@
 /*   By: rpisoner <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 00:41:41 by rpisoner          #+#    #+#             */
-/*   Updated: 2023/12/26 15:50:21 by rpisoner         ###   ########.fr       */
+/*   Updated: 2023/12/26 17:47:27 by rpisoner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ char	*is_line(char *buffer)
 
 	i = 0;
 	line = NULL;
-	while (buffer[i] != '\n' && buffer[i])
+	while (buffer[i] != '\n' && buffer[i] != '\0')
 		i++;
 	if (buffer[i] == '\n')
 		line = ft_substr(buffer, 0, i + 1);
@@ -82,7 +82,6 @@ char	*leftovers(char *buffer)
 	}
 	remainings = ft_substr(buffer, aux + 1, i - aux);
 	free(buffer);
-	buffer = NULL;
 	if (!remainings)
 		return (NULL);
 	return (remainings);
@@ -96,11 +95,9 @@ char	*get_next_line(int fd)
 	if (fd < 0 || !BUFFER_SIZE)
 		return (NULL);
 	if (!buffer || !ft_strchr(buffer, '\n'))
-	/*una funcion que lea y me devuelva toda la lectura*/
 		buffer = read_file(fd, buffer);
 	if (!buffer)
 		return (NULL);
-	//funcion para sacar la linea que voy a devolver
 	line = is_line(buffer);
 	if (!line)
 	{
@@ -108,15 +105,14 @@ char	*get_next_line(int fd)
 		buffer = NULL;
 		return (NULL);
 	}
-	//gestionamos el buffer para que nos quede bien limpio
 	buffer = leftovers(buffer);
 	return (line);
 }
 
-void	leaks(void)
-{
-	system("leaks -q a.out");
-}
+// void	leaks(void)
+// {
+// 	system("leaks -q a.out");
+// }
 
 // int	main(void)
 // {
@@ -124,17 +120,11 @@ void	leaks(void)
 // 	char	*next;
 
 // 	file = open("pruebas.txt", O_RDWR);
-// 	// while ((next = get_next_line(file)) != NULL)
-// 	// {
-// 	// 	printf("%s", next);
-// 	// 	free(next);
-// 	// }
-// 	next = get_next_line(file);
-// 	printf("%s", next);
-// 	free(next);
-// 	// next = get_next_line(file);
-// 	// printf("%s", next);
-// 	// free(next);
+// 	while ((next = get_next_line(file)) != NULL)
+// 	{
+// 		printf("%s", next);
+// 		free(next);
+// 	}
 // 	atexit(leaks);
 // 	close(file);
 // 	return (0);

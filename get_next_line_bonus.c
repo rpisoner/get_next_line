@@ -6,7 +6,7 @@
 /*   By: rpisoner <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/26 16:15:08 by rpisoner          #+#    #+#             */
-/*   Updated: 2023/12/26 17:15:15 by rpisoner         ###   ########.fr       */
+/*   Updated: 2023/12/26 17:52:44 by rpisoner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ char	*is_line(char *buffer)
 
 	i = 0;
 	line = NULL;
-	while (buffer[i] != '\n' && buffer[i])
+	while (buffer[i] != '\n' && buffer[i] != '\0')
 		i++;
 	if (buffer[i] == '\n')
 		line = ft_substr(buffer, 0, i + 1);
@@ -82,7 +82,6 @@ char	*leftovers(char *buffer)
 	}
 	remainings = ft_substr(buffer, aux + 1, i - aux);
 	free(buffer);
-	buffer = NULL;
 	if (!remainings)
 		return (NULL);
 	return (remainings);
