@@ -6,7 +6,7 @@
 /*   By: rpisoner <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 00:44:21 by rpisoner          #+#    #+#             */
-/*   Updated: 2023/12/18 19:33:10 by rpisoner         ###   ########.fr       */
+/*   Updated: 2023/12/26 13:13:54 by rpisoner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,9 @@ char	*ft_strjoin(char const *s1, char const *s2)
 
 	i = 0;
 	j = 0;
-	new = (char *)malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
+	new = (char *)malloc(ft_strlen(s1) + ft_strlen(s2) + 1); //LEAK
 	if (!new)
-		return (0);
+		return (NULL);
 	if (s1)
 	{
 		while ((char)s1[i] != '\0')
@@ -68,7 +68,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 		substr = "";
 		return (substr);
 	}
-	substr = (char *)malloc(len + 1);
+	substr = (char *)malloc(len + 1); //LEAK
 	if (!substr)
 		return (0);
 	while (i < len && *(s + i) != '\0')
